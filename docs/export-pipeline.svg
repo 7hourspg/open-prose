@@ -1,0 +1,136 @@
+<svg width="100%" viewBox="0 0 920 700" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Open Prose export pipeline</title>
+  <desc>How a project becomes a real Next.js folder. The export service loads the project from SQLite, the engine copies the embedded base scaffold and the selected theme overlay (running .tmpl files through text/template with a JSON-encoded site context), writes each post as an MDX file under content/posts, copies the about and home MDX, copies project media into public/media, and yields a Next.js 16 + MDX project on disk. From there the user previews via npm run dev or deploys via npx vercel.</desc>
+
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .t   { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+      .h   { font-weight: 600; font-size: 13px; }
+      .s   { font-size: 11px; }
+      .lbl { font-size: 11px; fill: rgb(100,90,75); }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; fill: rgb(180,178,169); }
+      .layer { font-family: 'Source Serif 4','New York',Georgia,serif; font-size: 12px; font-style: italic; fill: rgb(120,110,95); }
+    </style>
+  </defs>
+
+  <text x="460" y="32" text-anchor="middle" class="t" font-size="16" font-weight="600" fill="rgb(120,110,95)">Export pipeline</text>
+  <text x="460" y="50" text-anchor="middle" class="layer">domain.Project → embedded templates → Next.js 16 + MDX folder on disk</text>
+
+  <!-- ROW 1 — Source -->
+  <g>
+    <rect x="40" y="80" width="220" height="80" rx="10" fill="rgb(99,56,6)" stroke="rgb(239,159,39)" stroke-width="0.5"/>
+    <text x="150" y="106" text-anchor="middle" class="t h" fill="rgb(250,199,117)">SQLite database</text>
+    <text x="150" y="124" text-anchor="middle" class="t s" fill="rgb(239,159,39)">projects · posts · app_settings</text>
+    <text x="150" y="144" text-anchor="middle" class="mono">blog-editor.db</text>
+  </g>
+
+  <g>
+    <rect x="340" y="80" width="240" height="80" rx="10" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
+    <text x="460" y="106" text-anchor="middle" class="t h" fill="rgb(206,203,246)">ProjectService.Open(id)</text>
+    <text x="460" y="124" text-anchor="middle" class="t s" fill="rgb(175,169,236)">hydrates domain.Project</text>
+    <text x="460" y="144" text-anchor="middle" class="mono">Site · Theme · Nav · Posts</text>
+  </g>
+
+  <g>
+    <rect x="660" y="80" width="220" height="80" rx="10" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
+    <text x="770" y="106" text-anchor="middle" class="t h" fill="rgb(206,203,246)">ExportService.Export</text>
+    <text x="770" y="124" text-anchor="middle" class="t s" fill="rgb(175,169,236)">full vs posts-only</text>
+    <text x="770" y="144" text-anchor="middle" class="mono">PostsOnly = bool</text>
+  </g>
+
+  <line x1="260" y1="120" x2="338" y2="120" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="580" y1="120" x2="658" y2="120" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="770" y1="160" x2="770" y2="188" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ROW 2 — engine.Project + embedded FS -->
+  <g>
+    <rect x="40" y="192" width="200" height="80" rx="10" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
+    <text x="140" y="218" text-anchor="middle" class="t h" fill="rgb(159,225,203)">embedded FS</text>
+    <text x="140" y="236" text-anchor="middle" class="t s" fill="rgb(93,202,165)">internal/export/templates/</text>
+    <text x="140" y="256" text-anchor="middle" class="mono">base/ + minimal/ + …</text>
+  </g>
+
+  <g>
+    <rect x="290" y="188" width="380" height="88" rx="10" fill="rgb(113,43,19)" stroke="rgb(240,153,123)" stroke-width="0.5"/>
+    <text x="480" y="212" text-anchor="middle" class="t h" fill="rgb(245,196,179)">export.Project(outputDir, p, opts)</text>
+    <text x="480" y="232" text-anchor="middle" class="t s" fill="rgb(240,153,123)">copyTree(base) → copyTree(theme)</text>
+    <text x="480" y="250" text-anchor="middle" class="t s" fill="rgb(240,153,123)">writePosts() → mediaCopy()</text>
+    <text x="480" y="268" text-anchor="middle" class="mono">.tmpl rendered via text/template + renderCtx</text>
+  </g>
+
+  <g>
+    <rect x="720" y="192" width="160" height="80" rx="10" fill="rgb(8,80,65)" stroke="rgb(93,202,165)" stroke-width="0.5"/>
+    <text x="800" y="218" text-anchor="middle" class="t h" fill="rgb(159,225,203)">renderCtx</text>
+    <text x="800" y="236" text-anchor="middle" class="t s" fill="rgb(93,202,165)">JSON-escaped</text>
+    <text x="800" y="256" text-anchor="middle" class="mono">name · url · social</text>
+  </g>
+
+  <line x1="240" y1="232" x2="288" y2="232" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="720" y1="232" x2="672" y2="232" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- branch arrows down -->
+  <line x1="380" y1="276" x2="380" y2="316" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="480" y1="276" x2="480" y2="316" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="580" y1="276" x2="580" y2="316" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ROW 3 — outputs -->
+  <g>
+    <rect x="40" y="320" width="200" height="80" rx="10" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+    <text x="140" y="346" text-anchor="middle" class="t h" fill="rgb(211,209,199)">Scaffold</text>
+    <text x="140" y="364" text-anchor="middle" class="t s" fill="rgb(180,178,169)">layout · components · lib</text>
+    <text x="140" y="384" text-anchor="middle" class="mono">src/lib/site.ts</text>
+  </g>
+  <g>
+    <rect x="280" y="320" width="200" height="80" rx="10" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+    <text x="380" y="346" text-anchor="middle" class="t h" fill="rgb(211,209,199)">Posts as MDX</text>
+    <text x="380" y="364" text-anchor="middle" class="t s" fill="rgb(180,178,169)">drafts excluded · about reserved</text>
+    <text x="380" y="384" text-anchor="middle" class="mono">content/posts/&lt;slug&gt;.mdx</text>
+  </g>
+  <g>
+    <rect x="520" y="320" width="160" height="80" rx="10" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+    <text x="600" y="346" text-anchor="middle" class="t h" fill="rgb(211,209,199)">Pages</text>
+    <text x="600" y="364" text-anchor="middle" class="t s" fill="rgb(180,178,169)">home + about</text>
+    <text x="600" y="384" text-anchor="middle" class="mono">content/*.mdx</text>
+  </g>
+  <g>
+    <rect x="720" y="320" width="160" height="80" rx="10" fill="rgb(68,68,65)" stroke="rgb(180,178,169)" stroke-width="0.5"/>
+    <text x="800" y="346" text-anchor="middle" class="t h" fill="rgb(211,209,199)">Media</text>
+    <text x="800" y="364" text-anchor="middle" class="t s" fill="rgb(180,178,169)">media.CopyTo</text>
+    <text x="800" y="384" text-anchor="middle" class="mono">public/media/</text>
+  </g>
+
+  <!-- converge to project folder -->
+  <line x1="140" y1="400" x2="140" y2="428" stroke="rgb(120,110,95)" stroke-width="1.5"/>
+  <line x1="380" y1="400" x2="380" y2="428" stroke="rgb(120,110,95)" stroke-width="1.5"/>
+  <line x1="600" y1="400" x2="600" y2="428" stroke="rgb(120,110,95)" stroke-width="1.5"/>
+  <line x1="800" y1="400" x2="800" y2="428" stroke="rgb(120,110,95)" stroke-width="1.5"/>
+  <line x1="140" y1="428" x2="800" y2="428" stroke="rgb(120,110,95)" stroke-width="1.5"/>
+  <line x1="470" y1="428" x2="470" y2="460" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ROW 4 — Next.js folder -->
+  <g>
+    <rect x="220" y="464" width="500" height="64" rx="10" fill="rgb(39,80,10)" stroke="rgb(151,196,89)" stroke-width="0.5"/>
+    <text x="470" y="488" text-anchor="middle" class="t h" fill="rgb(192,221,151)">Real Next.js 16 + MDX project on disk</text>
+    <text x="470" y="508" text-anchor="middle" class="t s" fill="rgb(151,196,89)">sitemap · robots · RSS · OG · JSON-LD · sharp · next/font/google</text>
+  </g>
+
+  <line x1="380" y1="528" x2="220" y2="568" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="560" y1="528" x2="720" y2="568" stroke="rgb(120,110,95)" stroke-width="1.5" marker-end="url(#a)"/>
+
+  <!-- ROW 5 — preview vs deploy -->
+  <g>
+    <rect x="60" y="572" width="280" height="64" rx="10" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
+    <text x="200" y="596" text-anchor="middle" class="t h" fill="rgb(206,203,246)">Preview locally</text>
+    <text x="200" y="616" text-anchor="middle" class="mono">npm install · npm run dev</text>
+  </g>
+  <g>
+    <rect x="600" y="572" width="280" height="64" rx="10" fill="rgb(60,52,137)" stroke="rgb(175,169,236)" stroke-width="0.5"/>
+    <text x="740" y="596" text-anchor="middle" class="t h" fill="rgb(206,203,246)">Deploy</text>
+    <text x="740" y="616" text-anchor="middle" class="mono">npx vercel --prod --yes  (or any host)</text>
+  </g>
+
+  <text x="470" y="668" text-anchor="middle" class="t lbl" font-style="italic">Re-export is idempotent · posts-only mode preserves layout.tsx / globals.css / package.json</text>
+</svg>

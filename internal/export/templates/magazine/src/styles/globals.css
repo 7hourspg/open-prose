@@ -1,0 +1,364 @@
+@import "tailwindcss";
+@import "./hljs.css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Charter", Georgia, serif;
+  --font-display: "Didot", "Bodoni 72", Garamond, serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: light;
+  --background: oklch(0.930 0.024 85);
+  --foreground: oklch(0.190 0.012 50);
+  --card: oklch(0.955 0.020 85);
+  --card-foreground: oklch(0.190 0.012 50);
+  --popover: oklch(0.955 0.020 85);
+  --popover-foreground: oklch(0.190 0.012 50);
+  --primary: oklch(0.448 0.156 28);
+  --primary-foreground: oklch(0.955 0.020 85);
+  --secondary: oklch(0.890 0.022 85);
+  --secondary-foreground: oklch(0.190 0.012 50);
+  --muted: oklch(0.890 0.022 85);
+  --muted-foreground: oklch(0.485 0.020 60);
+  --accent: oklch(0.448 0.156 28);
+  --accent-foreground: oklch(0.955 0.020 85);
+  --destructive: oklch(0.50 0.20 25);
+  --border: oklch(0.190 0.012 50 / 0.18);
+  --input: oklch(0.190 0.012 50 / 0.18);
+  --ring: oklch(0.448 0.156 28);
+  --radius: 0rem;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.190 0.012 50);
+  --foreground: oklch(0.930 0.024 85);
+  --card: oklch(0.220 0.012 50);
+  --card-foreground: oklch(0.930 0.024 85);
+  --popover: oklch(0.220 0.012 50);
+  --popover-foreground: oklch(0.930 0.024 85);
+  --primary: oklch(0.640 0.158 28);
+  --primary-foreground: oklch(0.190 0.012 50);
+  --secondary: oklch(0.260 0.012 50);
+  --secondary-foreground: oklch(0.930 0.024 85);
+  --muted: oklch(0.260 0.012 50);
+  --muted-foreground: oklch(0.690 0.020 60);
+  --accent: oklch(0.640 0.158 28);
+  --accent-foreground: oklch(0.190 0.012 50);
+  --destructive: oklch(0.65 0.20 25);
+  --border: oklch(0.930 0.024 85 / 0.16);
+  --input: oklch(0.930 0.024 85 / 0.16);
+  --ring: oklch(0.640 0.158 28);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-serif);
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
+  color: var(--foreground);
+}
+
+.prose-magazine {
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.72;
+  max-width: 640px;
+}
+.prose-magazine > * + * {
+  margin-top: 1em;
+}
+.prose-magazine h1 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  margin: 1.8em 0 0.6em;
+  line-height: 1.1;
+}
+.prose-magazine h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  margin: 1.6em 0 0.6em;
+  line-height: 1.2;
+}
+.prose-magazine h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  margin: 1.4em 0 0.5em;
+}
+.prose-magazine blockquote {
+  margin: 1.6em 0;
+  padding: 0 0 0 24px;
+  border-left: 2px solid var(--accent);
+  font-style: italic;
+  color: var(--foreground);
+}
+.prose-magazine blockquote p {
+  margin: 0;
+}
+.prose-magazine a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 50%, transparent);
+}
+.prose-magazine a:hover {
+  border-bottom-color: var(--accent);
+}
+.prose-magazine :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--muted);
+}
+.prose-magazine pre {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+  padding: 22px 24px;
+  border-radius: var(--radius);
+  border: 0;
+  background: #1a1d23;
+  color: #e6e6e6;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 2em 0;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+.prose-magazine pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+.prose-magazine pre {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.15s;
+}
+.prose-magazine pre:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+.prose-magazine pre::-webkit-scrollbar {
+  height: 8px;
+  background: transparent;
+}
+.prose-magazine pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+.prose-magazine pre::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.prose-magazine pre:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  background-clip: padding-box;
+}
+
+/* Magazine ships a dark code-block — override the shared (light) hljs theme
+   inside .prose-magazine pre so tokens read against the dark slab. */
+.prose-magazine pre .hljs {
+  color: #e6e6e6;
+  background: transparent;
+}
+.prose-magazine pre .hljs-comment,
+.prose-magazine pre .hljs-quote,
+.prose-magazine pre .hljs-code,
+.prose-magazine pre .hljs-formula {
+  color: #8b949e;
+  font-style: italic;
+}
+.prose-magazine pre .hljs-keyword,
+.prose-magazine pre .hljs-doctag,
+.prose-magazine pre .hljs-template-tag,
+.prose-magazine pre .hljs-template-variable,
+.prose-magazine pre .hljs-type,
+.prose-magazine pre .hljs-variable.language_ {
+  color: #ff7b72;
+}
+.prose-magazine pre .hljs-name,
+.prose-magazine pre .hljs-selector-tag,
+.prose-magazine pre .hljs-selector-pseudo {
+  color: #7ee787;
+}
+.prose-magazine pre .hljs-attr,
+.prose-magazine pre .hljs-attribute,
+.prose-magazine pre .hljs-literal,
+.prose-magazine pre .hljs-meta,
+.prose-magazine pre .hljs-number,
+.prose-magazine pre .hljs-operator,
+.prose-magazine pre .hljs-selector-attr,
+.prose-magazine pre .hljs-selector-class,
+.prose-magazine pre .hljs-selector-id,
+.prose-magazine pre .hljs-variable {
+  color: #79c0ff;
+}
+.prose-magazine pre .hljs-string,
+.prose-magazine pre .hljs-regexp {
+  color: #a5d6ff;
+}
+.prose-magazine pre .hljs-built_in,
+.prose-magazine pre .hljs-symbol {
+  color: #ffa657;
+}
+.prose-magazine pre .hljs-title,
+.prose-magazine pre .hljs-title.class_,
+.prose-magazine pre .hljs-title.function_ {
+  color: #d2a8ff;
+}
+.prose-magazine pre .hljs-section {
+  color: #79c0ff;
+  font-weight: bold;
+}
+.prose-magazine pre .hljs-bullet {
+  color: #f2cc60;
+}
+.prose-magazine pre .hljs-addition {
+  background: rgba(46, 160, 67, 0.18);
+  color: #aff5b4;
+}
+.prose-magazine pre .hljs-deletion {
+  background: rgba(248, 81, 73, 0.18);
+  color: #ffdcd7;
+}
+.prose-magazine ul,
+.prose-magazine ol {
+  margin: 1em 0 1.4em;
+  padding-left: 24px;
+}
+.prose-magazine ul {
+  list-style: disc;
+}
+.prose-magazine ol {
+  list-style: decimal;
+}
+.prose-magazine li + li {
+  margin-top: 0.4em;
+}
+.prose-magazine hr {
+  border: 0;
+  height: 1px;
+  background: var(--border);
+  margin: 2.4em 0;
+}
+.prose-magazine .prose-table-wrap {
+  margin: 1.8em 0;
+  overflow-x: scroll;
+  border-radius: 6px;
+  outline: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent);
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.15s;
+}
+.prose-magazine .prose-table-wrap:hover {
+  scrollbar-color: color-mix(in oklab, var(--foreground) 40%, transparent) transparent;
+}
+.prose-magazine .prose-table-wrap::-webkit-scrollbar {
+  height: 10px;
+  background: transparent;
+}
+.prose-magazine .prose-table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.prose-magazine .prose-table-wrap::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.prose-magazine .prose-table-wrap:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--foreground) 40%, transparent);
+  background-clip: padding-box;
+}
+.prose-magazine table {
+  width: 100%;
+  min-width: max-content;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.92em;
+  margin: 0;
+}
+.prose-magazine th,
+.prose-magazine td {
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-magazine th {
+  font-weight: 600;
+  background: color-mix(in oklab, var(--foreground) 6%, transparent);
+}
+.prose-magazine td p,
+.prose-magazine th p {
+  margin: 0;
+}
+.prose-magazine img {
+  margin: 1.4em 0;
+  max-width: 100%;
+  height: auto;
+}
+.prose-magazine figure.prose-figure {
+  margin: 1.6em 0;
+}
+.prose-magazine figure.prose-figure > img {
+  margin: 0;
+}
+.prose-magazine figure.prose-figure > figcaption {
+  margin-top: 0.7em;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+

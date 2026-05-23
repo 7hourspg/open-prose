@@ -1,0 +1,338 @@
+@import "tailwindcss";
+@import "./hljs.css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-code-bg: var(--code-bg);
+  --color-code-fg: var(--code-fg);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fira Code", "SF Mono", ui-monospace, monospace;
+  --font-display: var(--font-mono);
+}
+
+/* Default: dark */
+:root {
+  color-scheme: dark;
+  --background: oklch(0.158 0.012 250);
+  --foreground: oklch(0.918 0.004 90);
+  --card: oklch(0.190 0.014 250);
+  --card-foreground: oklch(0.918 0.004 90);
+  --popover: oklch(0.190 0.014 250);
+  --popover-foreground: oklch(0.918 0.004 90);
+  --primary: oklch(0.852 0.122 178);
+  --primary-foreground: oklch(0.158 0.012 250);
+  --secondary: oklch(0.230 0.014 250);
+  --secondary-foreground: oklch(0.918 0.004 90);
+  --muted: oklch(0.230 0.014 250);
+  --muted-foreground: oklch(0.605 0.014 240);
+  --accent: oklch(0.852 0.122 178);
+  --accent-foreground: oklch(0.158 0.012 250);
+  --destructive: oklch(0.68 0.22 25);
+  --border: oklch(0.918 0.004 90 / 0.10);
+  --input: oklch(0.918 0.004 90 / 0.10);
+  --ring: oklch(0.852 0.122 178);
+  --code-bg: oklch(0.176 0.014 250);
+  --code-fg: oklch(0.820 0.080 350);
+  --radius: 0.25rem;
+}
+
+/* Opt-in light */
+.light {
+  color-scheme: light;
+  --background: oklch(0.984 0.004 90);
+  --foreground: oklch(0.180 0.008 250);
+  --card: oklch(0.948 0.004 90);
+  --card-foreground: oklch(0.180 0.008 250);
+  --popover: oklch(0.948 0.004 90);
+  --popover-foreground: oklch(0.180 0.008 250);
+  --primary: oklch(0.628 0.110 178);
+  --primary-foreground: oklch(0.984 0.004 90);
+  --secondary: oklch(0.920 0.004 90);
+  --secondary-foreground: oklch(0.180 0.008 250);
+  --muted: oklch(0.920 0.004 90);
+  --muted-foreground: oklch(0.448 0.014 240);
+  --accent: oklch(0.628 0.110 178);
+  --accent-foreground: oklch(0.984 0.004 90);
+  --destructive: oklch(0.55 0.22 25);
+  --border: oklch(0.180 0.008 250 / 0.12);
+  --input: oklch(0.180 0.008 250 / 0.12);
+  --ring: oklch(0.628 0.110 178);
+  --code-bg: oklch(0.940 0.004 90);
+  --code-fg: oklch(0.420 0.110 350);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+body {
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 32%, transparent);
+  color: var(--foreground);
+}
+
+.prose-developer {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  line-height: 1.72;
+  max-width: 720px;
+}
+.prose-developer > * + * {
+  margin-top: 1em;
+}
+.prose-developer h1 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: -0.4px;
+  margin: 2em 0 0.6em;
+}
+.prose-developer h1::before {
+  content: "# ";
+  color: var(--muted-foreground);
+}
+.prose-developer h2 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: -0.2px;
+  margin: 1.8em 0 0.6em;
+}
+.prose-developer h2::before {
+  content: "## ";
+  color: var(--muted-foreground);
+}
+.prose-developer h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 1.4em 0 0.5em;
+}
+.prose-developer h3::before {
+  content: "### ";
+  color: var(--muted-foreground);
+}
+.prose-developer a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+}
+.prose-developer :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  color: var(--code-fg);
+}
+.prose-developer pre {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  overflow-x: auto;
+  white-space: pre;
+  margin: 1.4em -8px;
+}
+.prose-developer pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--foreground);
+  font-size: inherit;
+}
+.prose-developer pre {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.15s;
+}
+.prose-developer pre:hover {
+  scrollbar-color: color-mix(in oklab, var(--foreground) 40%, transparent) transparent;
+}
+.prose-developer pre::-webkit-scrollbar {
+  height: 8px;
+  background: transparent;
+}
+.prose-developer pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+.prose-developer pre::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.prose-developer pre:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--foreground) 40%, transparent);
+  background-clip: padding-box;
+}
+.prose-developer ul,
+.prose-developer ol {
+  margin: 0.5em 0 1.4em;
+  padding-left: 0;
+  list-style: none;
+}
+.prose-developer ul li,
+.prose-developer ol li {
+  margin: 6px 0;
+  padding-left: 22px;
+  position: relative;
+}
+.prose-developer ul li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+.prose-developer ol {
+  counter-reset: dev-li;
+}
+.prose-developer ol li {
+  counter-increment: dev-li;
+}
+.prose-developer ol li::before {
+  content: counter(dev-li) ".";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+.prose-developer blockquote {
+  margin: 1.4em 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--code-bg);
+  font-family: var(--font-sans);
+  color: var(--muted-foreground);
+}
+.prose-developer blockquote p {
+  margin: 0;
+}
+.prose-developer hr {
+  border: 0;
+  height: 1px;
+  background: var(--border);
+  margin: 2.4em 0;
+}
+.prose-developer .prose-table-wrap {
+  margin: 1.4em 0;
+  overflow-x: scroll;
+  border-radius: var(--radius);
+  outline: 1px solid var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.15s;
+}
+.prose-developer .prose-table-wrap:hover {
+  scrollbar-color: color-mix(in oklab, var(--foreground) 40%, transparent) transparent;
+}
+.prose-developer .prose-table-wrap::-webkit-scrollbar {
+  height: 10px;
+  background: transparent;
+}
+.prose-developer .prose-table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.prose-developer .prose-table-wrap::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.prose-developer .prose-table-wrap:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--foreground) 40%, transparent);
+  background-clip: padding-box;
+}
+.prose-developer table {
+  width: 100%;
+  min-width: max-content;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  margin: 0;
+}
+.prose-developer th,
+.prose-developer td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-developer th {
+  background: var(--code-bg);
+  font-weight: 600;
+}
+.prose-developer td p,
+.prose-developer th p {
+  margin: 0;
+}
+.prose-developer img {
+  margin: 1.4em 0;
+  border-radius: var(--radius);
+  max-width: 100%;
+  height: auto;
+}
+.prose-developer figure.prose-figure {
+  margin: 1.4em 0;
+}
+.prose-developer figure.prose-figure > img {
+  margin: 0;
+}
+.prose-developer figure.prose-figure > figcaption {
+  margin-top: 0.5em;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+.prose-developer figure.prose-figure > figcaption::before {
+  content: "// ";
+  color: var(--muted-foreground);
+  opacity: 0.6;
+}

@@ -1,0 +1,288 @@
+@import "tailwindcss";
+@import "./hljs.css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Iowan Old Style", "Hoefler Text", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", monospace;
+}
+
+:root {
+  color-scheme: light;
+  --background: oklch(0.971 0.012 85);
+  --foreground: oklch(0.184 0.008 60);
+  --card: oklch(0.985 0.008 85);
+  --card-foreground: oklch(0.184 0.008 60);
+  --popover: oklch(0.985 0.008 85);
+  --popover-foreground: oklch(0.184 0.008 60);
+  --primary: oklch(0.584 0.128 38);
+  --primary-foreground: oklch(0.985 0.008 85);
+  --secondary: oklch(0.940 0.010 80);
+  --secondary-foreground: oklch(0.184 0.008 60);
+  --muted: oklch(0.940 0.010 80);
+  --muted-foreground: oklch(0.470 0.012 55);
+  --accent: oklch(0.584 0.128 38);
+  --accent-foreground: oklch(0.985 0.008 85);
+  --destructive: oklch(0.55 0.18 25);
+  --border: oklch(0.184 0.008 60 / 0.12);
+  --input: oklch(0.184 0.008 60 / 0.12);
+  --ring: oklch(0.584 0.128 38);
+  --radius: 0.125rem;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.184 0.008 60);
+  --foreground: oklch(0.940 0.012 85);
+  --card: oklch(0.220 0.008 60);
+  --card-foreground: oklch(0.940 0.012 85);
+  --popover: oklch(0.220 0.008 60);
+  --popover-foreground: oklch(0.940 0.012 85);
+  --primary: oklch(0.685 0.130 38);
+  --primary-foreground: oklch(0.184 0.008 60);
+  --secondary: oklch(0.250 0.008 60);
+  --secondary-foreground: oklch(0.940 0.012 85);
+  --muted: oklch(0.250 0.008 60);
+  --muted-foreground: oklch(0.640 0.012 55);
+  --accent: oklch(0.685 0.130 38);
+  --accent-foreground: oklch(0.184 0.008 60);
+  --destructive: oklch(0.65 0.18 25);
+  --border: oklch(0.940 0.012 85 / 0.14);
+  --input: oklch(0.940 0.012 85 / 0.14);
+  --ring: oklch(0.685 0.130 38);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-serif);
+}
+
+body {
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
+  color: var(--foreground);
+}
+
+.prose-minimal {
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.72;
+  max-width: 65ch;
+}
+.prose-minimal > * + * {
+  margin-top: 1em;
+}
+.prose-minimal h1 {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  margin: 2em 0 0.6em;
+  line-height: 1.18;
+}
+.prose-minimal h2 {
+  font-size: 24px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.2px;
+  margin: 1.8em 0 0.6em;
+}
+.prose-minimal h3 {
+  font-size: 18.5px;
+  font-weight: 600;
+  margin: 1.6em 0 0.5em;
+}
+.prose-minimal blockquote {
+  margin: 1.6em 0;
+  padding: 0 0 0 24px;
+  border-left: 2px solid var(--accent);
+  color: var(--foreground);
+  font-style: italic;
+  font-size: 19px;
+}
+.prose-minimal a {
+  color: var(--foreground);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 50%, transparent);
+}
+.prose-minimal a:hover {
+  border-bottom-color: var(--accent);
+}
+.prose-minimal :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--muted);
+}
+.prose-minimal pre {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  overflow-x: auto;
+  white-space: pre;
+  margin: 1.4em 0;
+}
+.prose-minimal pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+.prose-minimal pre {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.15s;
+}
+.prose-minimal pre:hover {
+  scrollbar-color: color-mix(in oklab, var(--foreground) 40%, transparent) transparent;
+}
+.prose-minimal pre::-webkit-scrollbar {
+  height: 8px;
+  background: transparent;
+}
+.prose-minimal pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+.prose-minimal pre::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.prose-minimal pre:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--foreground) 40%, transparent);
+  background-clip: padding-box;
+}
+.prose-minimal ul,
+.prose-minimal ol {
+  margin: 1em 0 1.4em;
+  padding-left: 24px;
+}
+.prose-minimal ul {
+  list-style: disc;
+}
+.prose-minimal ol {
+  list-style: decimal;
+}
+.prose-minimal li + li {
+  margin-top: 0.4em;
+}
+.prose-minimal hr {
+  border: 0;
+  height: 1px;
+  background: var(--border);
+  margin: 2.4em 0;
+}
+.prose-minimal .prose-table-wrap {
+  margin: 1.8em 0;
+  overflow-x: scroll;
+  border-radius: 6px;
+  outline: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent);
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.15s;
+}
+.prose-minimal .prose-table-wrap:hover {
+  scrollbar-color: color-mix(in oklab, var(--foreground) 40%, transparent) transparent;
+}
+.prose-minimal .prose-table-wrap::-webkit-scrollbar {
+  height: 10px;
+  background: transparent;
+}
+.prose-minimal .prose-table-wrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.prose-minimal .prose-table-wrap::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.prose-minimal .prose-table-wrap:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--foreground) 40%, transparent);
+  background-clip: padding-box;
+}
+.prose-minimal table {
+  width: 100%;
+  min-width: max-content;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 0.92em;
+  margin: 0;
+}
+.prose-minimal th,
+.prose-minimal td {
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-minimal th {
+  font-weight: 600;
+  background: color-mix(in oklab, var(--foreground) 5%, transparent);
+}
+.prose-minimal td p,
+.prose-minimal th p {
+  margin: 0;
+}
+.prose-minimal img {
+  margin: 1.4em 0;
+  border-radius: var(--radius);
+  max-width: 100%;
+  height: auto;
+}
+.prose-minimal figure.prose-figure {
+  margin: 1.4em 0;
+}
+.prose-minimal figure.prose-figure > img {
+  margin: 0;
+}
+.prose-minimal figure.prose-figure > figcaption {
+  margin-top: 0.6em;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  font-style: italic;
+  text-align: center;
+}

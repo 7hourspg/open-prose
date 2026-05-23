@@ -1,0 +1,58 @@
+export const site: {
+  name: string;
+  url: string;
+  author: string;
+  description: string;
+  icon: string;
+  ogImage: string;
+  locale: string;
+  twitterHandle: string;
+  keywords: string[];
+  organizationName: string;
+  organizationLogo: string;
+  socialUrls: string[];
+} = {
+  name: {{.SiteNameJSON}},
+  url: {{.SiteURLJSON}},
+  author: {{.AuthorJSON}},
+  description: {{.DescriptionJSON}},
+  icon: {{.IconJSON}},
+  ogImage: {{.OgImageJSON}},
+  locale: {{.LocaleJSON}},
+  twitterHandle: {{.TwitterHandleJSON}},
+  keywords: {{.KeywordsJSON}},
+  organizationName: {{.OrganizationNameJSON}},
+  organizationLogo: {{.OrganizationLogoJSON}},
+  socialUrls: {{.SocialURLsJSON}},
+};
+
+export const theme: {
+  template: string;
+} = {
+  template: {{.TemplateJSON}},
+};
+
+export const header: {
+  tagline: string;
+} = {
+  tagline: {{.HeaderTaglineJSON}},
+};
+
+export const footer: {
+  copyright: string;
+  social: { platform: string; url: string }[];
+} = {
+  copyright: {{.FooterCopyrightJSON}},
+  social: {{.SocialJSON}},
+};
+
+export const navigation: { label: string; href: string }[] = {{.NavigationJSON}};
+
+export const hasAbout: boolean = {{.HasAbout}};
+export const hasHome: boolean = {{.HasHome}};
+
+/** Display name for the publishing org. Falls back to site.name. */
+export const publisherName: string = site.organizationName || site.name;
+
+/** Logo URL for the publishing org. Falls back to site.icon. */
+export const publisherLogo: string = site.organizationLogo || site.icon;

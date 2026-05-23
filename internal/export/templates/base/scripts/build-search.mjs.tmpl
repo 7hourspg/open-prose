@@ -1,0 +1,191 @@
+import * as pagefind from "pagefind";
+import fs from "node:fs";
+import path from "node:path";
+import matter from "gray-matter";
+
+const POSTS_DIR = path.join(process.cwd(), "content", "posts");
+const ABOUT_FILE = path.join(process.cwd(), "content", "about.mdx");
+const HOME_FILE = path.join(process.cwd(), "content", "home.mdx");
+const OUT_DIR = path.join(process.cwd(), "public", "pagefind");
+const LANGUAGE = {{.LocaleJSON}};
+const SITE_NAME = {{.SiteNameJSON}};
+
+function stripMdxToText(s) {
+  return s
+    .replace(/^---\n[\s\S]*?\n---\n/, "")
+    .replace(/^import\s+[^\n]*$/gm, "")
+    .replace(/^export\s+[^\n]*$/gm, "")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`\n]*`/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/<\/?[A-Za-z][^>]*>/g, " ")
+    .replace(/[#*_>~]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Matches rehype-slug's github-slugger algorithm for ASCII headings.
+function slugifyHeading(text) {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+// Splits MDX content into an "intro" section (everything before the first H2/H3)
+// plus one section per H2/H3 heading. Code fences are skipped so headings
+// inside them don't trigger.
+function splitSections(mdx) {
+  const lines = mdx.split("\n");
+  const sections = [];
+  let current = { level: 0, title: null, lines: [] };
+  let inCode = false;
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) {
+      inCode = !inCode;
+      current.lines.push(line);
+      continue;
+    }
+    if (inCode) {
+      current.lines.push(line);
+      continue;
+    }
+    const m = /^(#{2,3})\s+(.+?)\s*$/.exec(line);
+    if (m) {
+      sections.push(current);
+      current = { level: m[1].length, title: m[2], lines: [] };
+    } else {
+      current.lines.push(line);
+    }
+  }
+  sections.push(current);
+  return sections.map((s) => ({ ...s, body: s.lines.join("\n").trim() }));
+}
+
+function readPosts() {
+  if (!fs.existsSync(POSTS_DIR)) return [];
+  return fs
+    .readdirSync(POSTS_DIR)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((file) => {
+      const raw = fs.readFileSync(path.join(POSTS_DIR, file), "utf8");
+      const { data, content } = matter(raw);
+      return { data, content, file };
+    })
+    .filter(({ data }) => data.noIndex !== true);
+}
+
+async function indexDocument(index, { title, baseUrl, content, baseFilters, baseMeta, sort }) {
+  const sections = splitSections(content);
+  const usedSlugs = new Set();
+  for (const section of sections) {
+    const text = stripMdxToText(section.body);
+    if (section.level === 0) {
+      const intro = `${title}\n\n${baseMeta?.description ?? ""}\n\n${text}`.trim();
+      if (!intro) continue;
+      await index.addCustomRecord({
+        url: baseUrl,
+        content: intro,
+        language: LANGUAGE,
+        meta: { title, ...(baseMeta ?? {}) },
+        filters: baseFilters,
+        ...(sort ? { sort } : {}),
+      });
+    } else {
+      if (!text && !section.title) continue;
+      let anchor = slugifyHeading(section.title);
+      if (!anchor) continue;
+      let unique = anchor;
+      let i = 1;
+      while (usedSlugs.has(unique)) unique = `${anchor}-${i++}`;
+      usedSlugs.add(unique);
+      await index.addCustomRecord({
+        url: `${baseUrl}#${unique}`,
+        content: `${section.title}\n\n${text}`.trim() || section.title,
+        language: LANGUAGE,
+        meta: {
+          title: section.title,
+          parent_title: title,
+          parent_url: baseUrl,
+        },
+        filters: baseFilters,
+        ...(sort ? { sort } : {}),
+      });
+    }
+  }
+}
+
+async function main() {
+  const posts = readPosts();
+  const hasAbout = fs.existsSync(ABOUT_FILE);
+  const hasHome = fs.existsSync(HOME_FILE);
+  console.log(
+    `[pagefind] indexing ${posts.length} post(s)` +
+      (hasHome ? " + home" : "") +
+      (hasAbout ? " + about" : "")
+  );
+
+  if (fs.existsSync(OUT_DIR)) fs.rmSync(OUT_DIR, { recursive: true, force: true });
+
+  const { index, errors } = await pagefind.createIndex({ forceLanguage: LANGUAGE });
+  if (errors && errors.length) {
+    for (const e of errors) console.error("[pagefind]", e);
+    process.exit(1);
+  }
+
+  for (const { data, content, file } of posts) {
+    const slug = data.slug ?? file.replace(/\.mdx$/, "");
+    const baseFilters = { kind: ["post"] };
+    if (Array.isArray(data.tags) && data.tags.length > 0) {
+      baseFilters.tags = data.tags.filter((t) => typeof t === "string");
+    }
+    const sort = {};
+    const date = data.publishedAt ?? data.date;
+    if (date) sort.date = String(date);
+
+    const baseMeta = {};
+    if (typeof data.description === "string" && data.description) baseMeta.description = data.description;
+    if (typeof data.image === "string" && data.image) baseMeta.image = data.image;
+
+    await indexDocument(index, {
+      title: typeof data.title === "string" ? data.title : "Untitled",
+      baseUrl: `/blog/${slug}`,
+      content,
+      baseFilters,
+      baseMeta,
+      sort: Object.keys(sort).length > 0 ? sort : undefined,
+    });
+  }
+
+  if (hasHome) {
+    const { content } = matter(fs.readFileSync(HOME_FILE, "utf8"));
+    await indexDocument(index, {
+      title: SITE_NAME || "Home",
+      baseUrl: "/",
+      content,
+      baseFilters: { kind: ["page"] },
+    });
+  }
+
+  if (hasAbout) {
+    const { content } = matter(fs.readFileSync(ABOUT_FILE, "utf8"));
+    await indexDocument(index, {
+      title: "About",
+      baseUrl: "/about",
+      content,
+      baseFilters: { kind: ["page"] },
+    });
+  }
+
+  await index.writeFiles({ outputPath: OUT_DIR });
+  console.log(`[pagefind] index written to ${OUT_DIR}`);
+}
+
+main().catch((err) => {
+  console.error("[pagefind] failed:", err);
+  process.exit(1);
+});

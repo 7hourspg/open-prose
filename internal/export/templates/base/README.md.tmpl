@@ -1,0 +1,109 @@
+# {{.Slug}}
+
+A static blog exported by [Open Prose](https://github.com/anthropics/open-prose). Built on Next.js 16 + MDX. Everything in this folder is yours — there's no build step that depends on the editor, and no runtime that calls home.
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open http://localhost:3000.
+
+## Deploy
+
+This is a regular Next.js app. Pick whichever host you like:
+
+- **Vercel** — `vercel deploy` (or push to a connected GitHub repo). One click; image optimization works out of the box.
+- **Netlify** — set the build command to `npm run build` and leave the publish directory blank. The Netlify Next.js adapter handles routing.
+- **Cloudflare Pages** — same as Netlify; pick the Next.js framework preset and Cloudflare wires it up.
+- **Any Node host** — `npm run build && npm start` runs the production server on port 3000.
+
+### Static export (no Node needed)
+
+If you want a fully static site for GitHub Pages, S3, or similar:
+
+```js
+// next.config.mjs
+const nextConfig = {
+  output: "export",
+  images: { unoptimized: true },
+  // ...
+};
+```
+
+Run `npm run build`, then deploy the `out/` folder. **Tradeoff**: `next/image` becomes a pass-through — no AVIF/WebP conversion, no responsive `srcset`, no resizing. Drop pre-sized images into `public/` and serve them at one resolution.
+
+## Add images
+
+Drop files into `public/media/` and reference them as `/media/foo.jpg`. The Open Prose editor uploads here automatically; manual edits land here too.
+
+For inline body images, use standard markdown — they render as lazy-loaded `<img>` tags:
+
+```md
+![A short description](/media/foo.jpg)
+```
+
+For hero or large images where you know the dimensions, use `<Image>` directly in MDX. This gets you AVIF, WebP, responsive `srcset`, and zero layout shift:
+
+```mdx
+<Image
+  src="/media/hero.jpg"
+  alt="A short description"
+  width={1200}
+  height={630}
+  sizes="(max-width: 768px) 100vw, 720px"
+/>
+```
+
+The `sizes` hint is the only knob that controls which `srcset` candidate the browser picks. Match it to where the image actually appears on the page (`100vw` for full-bleed, `720px` for a centered prose column, etc.).
+
+## Edit content
+
+- **Posts** — `content/posts/*.mdx`. Frontmatter at the top (title, slug, date, tags, description, coverImage), MDX body below.
+- **Home page** — `content/home.mdx`. Optional. Renders inside the home page above the recent-posts list.
+- **About page** — `content/about.mdx`. Optional. Becomes `/about`.
+- **Site config** — `src/lib/site.ts`. Name, author, URL, social links, navigation, header tagline, footer copyright.
+
+## Edit design
+
+- **Colors, fonts, radii** — top of `src/styles/globals.css`. CSS custom properties with sensible defaults.
+- **Per-template prose styles** — same file, the `.prose-{template}` block. Margins, headings, code blocks, tables, images, the lot.
+- **Header / Footer markup** — `src/components/Header.tsx`, `src/components/Footer.tsx`.
+- **Page layouts** — `src/app/page.tsx`, `src/app/blog/page.tsx`, `src/app/blog/[slug]/page.tsx`, `src/app/about/page.tsx`.
+
+## What's already optimized
+
+- **`next/image`** with AVIF + WebP, responsive `srcset`, lazy loading by default. Cover images load with `priority` so they don't lazy.
+- **`next/font/google`** self-hosts the typefaces — no third-party request, automatic preload, automatic `size-adjust` to neutralize CLS during fallback.
+- **Static metadata** — every route generates `<title>`, OG tags, Twitter card tags from frontmatter and site config.
+- **`sitemap.xml`**, **`robots.txt`**, **RSS feed** at `/feed.xml`.
+- **JSON-LD structured data** — Article, BlogPosting, WebSite, Organization, BreadcrumbList, ProfilePage. Helps Google understand the content.
+- **`sharp`** for fast image transformation in production builds.
+
+## Where things live
+
+- `content/posts/*.mdx` — your blog posts.
+- `content/home.mdx` — home page body (optional).
+- `content/about.mdx` — about page body (optional).
+- `public/media/` — uploaded images and other assets.
+- `src/lib/site.ts` — site config.
+- `src/lib/content.ts` — reads posts and pages from disk with frontmatter.
+- `src/lib/seo.ts` — JSON-LD graph builders.
+- `src/app/layout.tsx` — root layout, metadata, fonts.
+- `src/app/page.tsx` — home page.
+- `src/app/blog/page.tsx` — blog index.
+- `src/app/blog/[slug]/page.tsx` — single post.
+- `src/app/about/page.tsx` — about page.
+- `src/app/sitemap.ts` — sitemap.xml.
+- `src/app/robots.ts` — robots.txt.
+- `src/app/feed.xml/route.ts` — RSS feed.
+- `src/styles/globals.css` — tokens + per-template prose.
+- `src/components/Header.tsx`, `Footer.tsx`, `MobileNav.tsx`.
+- `mdx-components.tsx` — element overrides for MDX (`<img>`, `<Image>`, links, tables, code).
+- `next.config.mjs` — image optimization knobs and Next.js config.
+
+## License
+
+Whatever you want — this output is yours. The Open Prose editor is separate.
